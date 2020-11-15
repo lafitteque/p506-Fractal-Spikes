@@ -1,0 +1,92 @@
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
+    <script src="sketch.js"></script>
+    <script>
+// This is an algorithm that creates a "spike" fractal and changes the angle with time
+
+
+var iterationNumber = 5
+var screenWidth = 800
+var fractalSize = screenWidth-100
+var fractalAngle = -Math.PI/4
+var i = 0
+
+
+function setup() {
+	createCanvas(screenWidth, screenWidth);
+}
+
+
+function draw() {
+
+  background(20);
+
+ 	fractalSpikes(50,
+                4*screenWidth/5,
+                fractalSize,
+                fractalAngle*1.7*Math.abs(sin(i/60)),
+                0,
+                iterationNumber)
+  	i++ 
+}
+
+
+
+function fractalSpikes(x,y,length,angle,axis,n){
+
+	// This is the recursive branch
+	// we want a spike like "_/\_" (in 4 parts)
+ 	if(n>0)
+ 	{
+ 		// From left to right we will have:
+
+ 		// no slope compared to the axis
+   		fractalSpikes(	x,
+                 		y,
+                 		length/3,
+                 		angle,
+                 		axis,
+                 		n-1)
+
+   		// a slope of angle compared to the axis
+   		// and a change of axis of angle in order to do a rotation of the following iteration
+    	fractalSpikes(	x + length/3*cos(axis),
+                 		y + length/3*sin(axis),
+                 		length/6/cos(angle),
+                 		angle,
+                 		axis+angle,
+                 		n-1)
+
+    	// a deacrising slope of -angle compared to the axis
+    	// and a change of axis of -angle in order to do a rotation of the following iteration
+    	fractalSpikes(	x + length/3*cos(axis) + length/6/cos(angle)*cos(axis+angle) ,
+                 		y + length/3*sin(axis)+ length/6/cos(angle)*sin(axis+angle) ,
+                 		length/6/cos(angle),
+                 		angle,
+                 		axis-angle,
+                 		n-1)
+
+    	// no slope compared to the axis
+    	fractalSpikes(	x+2*length/3*cos(axis),
+                 		y+2*length/3*sin(axis),
+                 		length/3,
+                 		angle,
+                 		axis,
+                 		n-1)
+    }
+
+    // If we finish the recursion, we draw the line depending on the axis, the starting position and the length
+ 	else
+ 	{
+   		push()
+   		translate(x,y)
+   		stroke(255)
+   		line(	0,
+        		0,
+        		cos(axis)*length,
+        		sin(axis)*length)
+   		pop()
+ 	}
+
+}
+
+</script>
